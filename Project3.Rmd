@@ -9,6 +9,11 @@ output: pdf_document
 library(tidyverse)
 library(RPostgreSQL)
 library(DBI)
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RCurl)
+library(RColorBrewer)
 ```
 
 # Introduction and Approach
@@ -123,7 +128,7 @@ skillsdata_long <- jobdata_tidy %>%
 
 ## Analysis
 
-[INSERT TEXT HERE TO DESCRIBE ANALYSIS]
+AS you can see, the most sought after skills for a data scientist according to our data is Python and SQL, with everything else at least 50 percent behind.  I think that it's interesting that Python has become so pivotal in this field, surpassing even R.
 
 ```{r message=FALSE}
 skillssummary <- skillsdata_long %>% 
@@ -138,6 +143,7 @@ skillssummary %>%
   coord_flip()
 ```
 
+
 ## Conclusion
 
 In conclusion, based on a consolidated list of 10,000 data science job postings from a variety of websites, the top 10 data science skills are:
@@ -146,4 +152,14 @@ In conclusion, based on a consolidated list of 10,000 data science job postings 
 top_n(arrange(skillssummary, desc(num_postings)), 10)
 ```
 
+Make a word cloud from some of the job descriptions
+```{r}
+write(jobdata_tidy[1:1250,]$job_description, "info.txt")
+filePath <- "info.txt"
+res<-rquery.wordcloud(filePath, type ="file", lang = "english", max.words = 50)
+```
 
+Something interesting here is the popping up of the word "machine" and "learning" which is not a skill, but clearly machine learning is another important role that data scientists are expected to fill.
+
+
+Python, SQL and R are the most important languages to learn, cross referencing this data against the tiobe index of programming languages (https://www.tiobe.com/tiobe-index/) shows that python is number 3 overall as well, making this not just a useful language to know for data science, but other disciplines of computer science as well.
