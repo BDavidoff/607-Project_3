@@ -99,19 +99,16 @@ for (i in 1:nrow(skills_df)){
 
 Now that the data frame is in the intended format, with the key columns created, we will search through each job listing to identify whether each skill is listed, then add it to a count in the columns created.
 
-We use the apply function to map to every row in the data frame, a function that checks for each skill in the skills data frame (skills_df) to see if it is in the text of the description of the job posting.  If it is there, the column is marked with a "yes" otherwise a "no".  Numbers were used rather than "yes" and "no" to facilitate analysis.
+We will loop through the 40 something skills of interest, and for each one, we will set its column to either true or false depending on if it shows up in the job description.  **this operation can take up to 1 minute to complete**
+
 ```{r}
-f = function(j) {
-  for (k in 1:nrow(skills_df)){
-      tempvar2 <- skills_df[k, 1]
-      tempregexstring <- tolower(paste0("\\s", tempvar2, "\\s|\\s",tempvar2,"[++][++]]\\s"))
-      ifelse((str_detect(tolower(jobdata_tidy$job_description[j]), tempregexstring, negate = FALSE)) == TRUE, 
-       jobdata_tidy[j, tempvar2] <- "yes", 
-       jobdata_tidy[j, tempvar2] <- "no")
-    }
+for(s in 1:nrow(skills_df)) {
+  skill = skills_df[s, 1]
+  jobdata_tidy[skill] = grepl(tolower(paste("", skill, "", sep=" ")), tolower(jobdata_tidy$job_description), fixed=TRUE)
 }
-apply(jobdata_tidy, 1, f)
+
 ```
+
 
 With the data calculated and populated, a new data frame will be created in a longer format for easier analysis.
 
@@ -120,7 +117,7 @@ With the data calculated and populated, a new data frame will be created in a lo
 skillsdata_long <- jobdata_tidy %>%
   select(9:54) %>%
   gather ("skill_name", "exists", 1:46) %>%
-  filter(exists == "yes")
+  filter(exists == TRUE)
 
 ```
 
