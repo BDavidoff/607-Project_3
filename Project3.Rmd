@@ -99,33 +99,7 @@ for (i in 1:nrow(skills_df)){
 
 Now that the data frame is in the intended format, with the key columns created, we will search through each job listing to identify whether each skill is listed, then add it to a count in the columns created.
 
-The first for loop iterates through every row of the job postings data frame (jobdata_tidy), and then the nested for loop checks for each skill in the skills data frame (skills_df) to see if it is in the text of the description of the job posting.  If it is there, the column is marked with a "yes" otherwise a "no".  Numbers were used rather than "yes" and "no" to facilitate analysis.
-
-**Note: It takes between 1 and 2 minutes to run**
-
-```{r}
-# Start the clock!
-ptm <- proc.time()
-
-# Nested for loop to check each description field for each skill, then mark the relevant skill column accordingly
-for (j in 1:nrow(jobdata_tidy)){
-    for (k in 1:nrow(skills_df)){
-      tempvar2 <- skills_df[k, 1]
-      tempregexstring <- tolower(paste0("\\s", tempvar2, "\\s|\\s",tempvar2,"[++][++]]\\s"))
-      ifelse((str_detect(tolower(jobdata_tidy$job_description[j]), tempregexstring, negate = FALSE)) == TRUE, 
-       jobdata_tidy[j, tempvar2] <- "yes", 
-       jobdata_tidy[j, tempvar2] <- "no")
-    }
-}
-
-# Stop the clock
-proc.time() - ptm
-jobdata_tidy
-```
-
-
-
-More efficient way to scan through data frame and pull out data that matches the thing we are looking for
+We use the apply function to map to every row in the data frame, a function that checks for each skill in the skills data frame (skills_df) to see if it is in the text of the description of the job posting.  If it is there, the column is marked with a "yes" otherwise a "no".  Numbers were used rather than "yes" and "no" to facilitate analysis.
 ```{r}
 f = function(j) {
   for (k in 1:nrow(skills_df)){
@@ -136,11 +110,7 @@ f = function(j) {
        jobdata_tidy[j, tempvar2] <- "no")
     }
 }
-ptm2 <- proc.time()
 apply(jobdata_tidy, 1, f)
-# Stop the clock
-proc.time() - ptm2
-jobdata_tidy
 ```
 
 With the data calculated and populated, a new data frame will be created in a longer format for easier analysis.
