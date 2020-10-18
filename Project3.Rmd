@@ -107,6 +107,7 @@ for (i in 1:nrow(skills_df)){
 
 ```
 
+
 Now that the data frame is in the intended format, with the key columns created, we will search through each job listing to identify whether each skill is listed, then add it to a count in the columns created.  This is done through a loop that iterates through a list of each skill and then sets the corresponding column name to true or false depending on whether the string is found.
 
 **Note: This operation can take up to 1 minute to complete**
@@ -118,6 +119,7 @@ for(s in 1:nrow(skills_df)) {
 }
 
 ```
+
 
 With the data calculated and populated, a new data frame will be created in a longer format for easier analysis.
 
@@ -133,6 +135,7 @@ skillsdata_long <- jobdata_tidy %>%
 ## Analysis
 
 The most sought after skills for a data scientist according are Python, SQL, and R (in that order), with everything else at least 50 percent behind.  I think that it is interesting that Python has become so pivotal in this field, surpassing even R.
+
 
 ```{r message=FALSE}
 skillssummary <- skillsdata_long %>% 
@@ -152,8 +155,9 @@ A word cloud was also created based on the text of the job descriptions to provi
 
 To facilitate simple creation of the wordcloud the rquery.wordcloud function was used, which is not part of an existing R package so the code has been pasted into the below code block.  
 
-The original source for the code is:
+## Conclusion
 
+The original source for the code is:
 http://www.sthda.com/english/wiki/word-cloud-generator-in-r-one-killer-function-to-do-everything-you-need#r-code-of-rquery.wordcloud-function
 
 ```{r}
@@ -235,9 +239,22 @@ res <- rquery.wordcloud(filePath, type ="file", lang = "english", max.words = 50
 ```
 # Conclusion
 
+
 In conclusion, based on a consolidated list of 10,000 data science job postings from a variety of websites, the top 10 data science skills from a software perspective are as follows:
 
 ```{r message=FALSE}
 top_n(arrange(skillssummary, desc(num_postings)), 10)
 ```
 In addition, it is also clear that analysis, business, and machine learning skills are also highly sought after.
+
+Make a word cloud from some of the job descriptions
+```{r}
+write(jobdata_tidy[1:1250,]$job_description, "info.txt")
+filePath <- "info.txt"
+res<-rquery.wordcloud(filePath, type ="file", lang = "english", max.words = 50)
+```
+
+Something interesting here is the popping up of the word "machine" and "learning" which is not a skill, but clearly machine learning is another important role that data scientists are expected to fill.
+
+
+Python, SQL and R are the most important languages to learn, cross referencing this data against the tiobe index of programming languages (https://www.tiobe.com/tiobe-index/) shows that python is number 3 overall as well, making this not just a useful language to know for data science, but other disciplines of computer science as well.
